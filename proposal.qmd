@@ -2,11 +2,26 @@
 title: "Proposal for Final Project"
 subtitle: "Statistical Programming Paradigms and Workflows (BSPH 140.777)"
 format: pdf
-author: "The Masons"
+author: "Team: The Masons"
 engine: knitr
 execute:
   echo: true
   warning: false
 ---
 
+#### Define the question and audience
+
+Write stuff!
+
+#### Collect data in a meaningful way
+
+Write stuff! 
+
+#### Integrate at least two programming paradigms
+
+Write stuff! 
+
+#### Build a usable data analytic product
+
+Write stuff! 
 
