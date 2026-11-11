@@ -1,0 +1,102 @@
+---
+title: "Attempting to use Stroke APIs"
+format: html
+---
+
+### Overall plan
+
+According to ChatGPT, we will need multiple CMS datasets: 
+1. "Hospital General Information": This gives information on hospital name, location, type, overall rating, etc.
+2. "Complications & Deaths": This gives mortality based on disease
+3. "Unplanned Hospital Visits": This gives readmissions based on disease
+
+It said that these datasets are "essential". It listed 3 more datasets, but not as essential. For now, I'll just try with these 3.
+
+```{r}
+#Install these packages if don't have them
+# install.packages(c(
+#   "httr2",
+#   "jsonlite",
+#   "janitor",
+#   "geosphere",
+#   "scales"
+# ))
+
+library(tidyverse)
+library(purrr)
+library(httr2)
+library(jsonlite)
+library(janitor)
+library(geosphere)
+library(scales)
+library(lubridate)
+```
+
+Next we create a function to retrieve the data. (Maybe this counts as functional programming?). The Provider Data Catalog allows for API access without an API key. (what does that mean??)
+
+```{r}
+get_cms_data <- function(dataset_id, limit = 1000) {
+
+  url <- paste0(
+    "https://data.cms.gov/provider-data/api/1/",
+    "datastore/query/",
+    dataset_id,
+    "/0"
+  )
+
+  response <- request(url) |>
+    req_url_query(
+      limit = limit,
+      offset = 0
+    ) |>
+    req_perform()
+
+  result <- resp_body_json(
+    response,
+    simplifyVector = TRUE
+  )
+
+  as_tibble(result$results) |>
+    clean_names()
+}
+
+#Now we actually call the function using the dataset IDs. Then we put the outputs into dataframes
+
+hospitals <- get_cms_data_all("xubh-q36u")
+dim(hospitals)
+glimpse(hospitals)
+
+complications_deaths <- get_cms_data_all("ynj2-r877")
+dim(complications_deaths)
+glimpse(complications_deaths)
+
+
+#The code below leads to an error (syntax error). Idk why.
+
+# unplanned_readmissions <- get_cms_data_all("632h-zaca"​)
+# dim(unplanned_readmissions)
+# glimpse(unplanned_readmissions)
+
+```
+
+```{r}
+library(httr2)
+
+url <- paste0(
+  "https://data.cms.gov/provider-data/api/1/",
+  "datastore/query/632h-zaca/0"
+)
+
+response <- request(url) |>
+  req_url_query(
+    limit = 10,
+    offset = 0
+  ) |>
+  req_headers(Accept = "application/json") |>
+  req_error(is_error = function(resp) FALSE) |>
+  req_perform()
+
+resp_status(response)
+
+resp_body_string(response)
+```
