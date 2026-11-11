@@ -62,21 +62,18 @@ get_cms_data <- function(dataset_id, limit = 1000) {
 
 #Now we actually call the function using the dataset IDs. Then we put the outputs into dataframes
 
-hospitals <- get_cms_data_all("xubh-q36u")
+hospitals <- get_cms_data("xubh-q36u")
 dim(hospitals)
 glimpse(hospitals)
 
-complications_deaths <- get_cms_data_all("ynj2-r877")
+complications_deaths <- get_cms_data("ynj2-r877")
 dim(complications_deaths)
 glimpse(complications_deaths)
 
-
-#The code below leads to an error (syntax error). Idk why.
-
-# unplanned_readmissions <- get_cms_data_all("632h-zaca"​)
-# dim(unplanned_readmissions)
-# glimpse(unplanned_readmissions)
-
+# I think it works now. 
+unplanned_readmissions <- get_cms_data("632h-zaca")
+dim(unplanned_readmissions)
+glimpse(unplanned_readmissions)
 ```
 
 ```{r}
