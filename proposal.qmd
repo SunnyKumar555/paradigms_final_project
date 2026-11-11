@@ -1,0 +1,12 @@
+---
+title: "Proposal for Final Project"
+subtitle: "Statistical Programming Paradigms and Workflows (BSPH 140.777)"
+format: pdf
+author: "The Masons"
+engine: knitr
+execute:
+  echo: true
+  warning: false
+---
+
+
