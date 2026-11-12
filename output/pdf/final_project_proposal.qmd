@@ -68,12 +68,11 @@ Some hospitals lack reportable values or uncertainty estimates. The population r
 
 We will organize development around the following tasks:
 
-1. **Confirm the initial measures.** Verify the mortality and readmission measure definitions and availability for heart attack, heart failure, and pneumonia. Summarize missingness by hospital and condition.
-2. **Build a reproducible data pipeline.** Refine the API functions, preserve raw responses and provenance, parse scores, validate joins, and produce a documented app-ready table.
-3. **Develop transparent comparisons.** Display condition-specific outcomes, overall stars, national comparison categories, denominators, reporting dates, and available uncertainty estimates. Compare distributions descriptively and show when evidence is unavailable.
-4. **Build the Shiny interface.** Add condition and location selectors, a sortable hospital table, and a comparison view for selected hospitals. Explain measures in plain language and make missing values visible.
-5. **Verify and deploy the product.** Check displayed values against source records, test filtering and missing-value behavior, seek informal usability feedback, and deploy the app with reproducible instructions.
-
+1. **Confirm the initial measures.** 
+2. **Build a reproducible data pipeline.** 
+3. **Develop transparent comparisons.**
+4. **Build the Shiny interface.** 
+5. **Verify and deploy the product.** 
 We will begin with measure-by-measure comparisons rather than a composite ranking. A weighted score would require additional decisions about scale, weights, missingness, and uncertainty; it is a possible extension only after the core comparison tool works. Machine learning is not necessary for the proposed question.
 
 ## 6. Programming paradigms
