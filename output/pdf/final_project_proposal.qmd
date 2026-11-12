@@ -14,8 +14,7 @@ execute:
 **Working project title:** Choosing a Hospital: A Patient-Facing Shiny App for Comparing Condition-Specific Outcomes.
 
 **Team:** The Masons.  
-**Team members:** Sankalp (Sunny) Kumar, Wanting Shan, Shiyi Zhang, Yutong (Benny) Li, Mason Cleveland 
-**Team leader:** Sankalp Kumar
+**Team members:** Sankalp (Sunny) Kumar, Wanting Shan, Shiyi Zhang, Yutong (Benny) Li, Mason Cleveland $\newline$**Team leader:** Sankalp Kumar
 
 ## 2. Question and audience
 
