@@ -14,8 +14,8 @@ execute:
 **Working project title:** Choosing a Hospital: A Patient-Facing Shiny App for Comparing Condition-Specific Outcomes.
 
 **Team:** The Masons.  
-**Team members:** [Add names.]  
-**Team leader:** [Add name.]
+**Team members:** Sankalp (Sunny) Kumar, Wanting Shan, Shiyi Zhang, Yutong (Benny) Li, Mason Cleveland 
+**Team leader:** Sankalp Kumar
 
 ## 2. Question and audience
 
@@ -70,7 +70,7 @@ We will organize development around the following tasks:
 
 1. **Confirm the initial measures.** 
 2. **Build a reproducible data pipeline.** 
-3. **Develop transparent comparisons.**
+3. **Develop transparent comparisons.** 
 4. **Build the Shiny interface.** 
 5. **Verify and deploy the product.** 
 We will begin with measure-by-measure comparisons rather than a composite ranking. A weighted score would require additional decisions about scale, weights, missingness, and uncertainty; it is a possible extension only after the core comparison tool works. Machine learning is not necessary for the proposed question.
@@ -84,6 +84,8 @@ In addition to meaningful API collection, we plan to integrate **functional prog
 **Command-line programming** will provide a reproducible workflow from acquisition to reporting. We will extend the existing shell entry point into a script that accepts a state argument, runs the R data pipeline, performs validation, and renders the Quarto data report. The script will stop when a required stage fails and use documented relative paths. This gives collaborators one entry point for refreshing the app's cached data and checking the resulting outputs.
 
 The components will work together as follows: a command-line entry point runs functional R acquisition and cleaning routines, which create validated data for Shiny and a rendered Quarto report. We will discuss whether the planned command-line component is sufficiently substantive at the proposal meeting. Using several software packages or languages alone will not be presented as evidence of multiple paradigms.
+
+**Machine learning** will potentially play a role in this project, depending on time, data quality, and feasibility. 
 
 ## 7. Software
 
@@ -102,7 +104,7 @@ An initial sample join was produced with a small Python script. For the final ap
 
 ## 8. Product
 
-The final product will be a deployed, patient-facing **Shiny hospital comparison app**, accompanied by a shared repository containing acquisition code, preparation functions, documentation, and the final Quarto report.
+This is tentative, but we envision that the final product will be a deployed, patient-facing **Shiny hospital comparison app**, accompanied by a shared repository containing acquisition code, preparation functions, documentation, and the final Quarto report.
 
 A user will select a condition and then narrow hospitals by available location fields, such as state or city. The app will display condition-specific mortality and readmission measures alongside hospital characteristics and overall stars. Users will be able to sort the table and select hospitals for a closer comparison. Definitions, missing-value explanations, and measurement dates will be accessible within the interface.
 
