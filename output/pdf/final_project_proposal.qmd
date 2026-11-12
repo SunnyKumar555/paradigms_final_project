@@ -19,13 +19,13 @@ execute:
 
 ## 2. Question and audience
 
-Our guiding question is: **How can patients and caregivers compare hospitals for a selected condition using publicly available measures of mortality, readmissions, and overall quality?**
+Our guiding question is: **How can patients and caregivers compare hospitals for a selected condition using publicly available measures of mortality, readmissions, cost and overall quality?**
 
 Choosing a hospital involves interpreting information that may be difficult to find or compare. A hospital's overall rating does not necessarily describe its performance for a particular condition. Patients may also encounter missing measures, different reporting periods, and historical financial information without understanding how these affect a comparison.
 
-We propose a Shiny application for patients and caregivers who are exploring options for planned care or discussing hospital choices with a clinician. Users will select a condition and location, inspect available hospital outcomes, and compare measures alongside their definitions and reporting periods. The initial version will focus on Maryland hospitals and three conditions: heart attack, heart failure, and pneumonia. These conditions provide a manageable starting point with mortality and readmission measures in the datasets we accessed.
+We propose a Shiny application for patients and caregivers who are exploring options for planned care or discussing hospital choices with a clinician. Users will select a condition and location, inspect available hospital outcomes, and compare measures alongside their definitions and reporting periods. The initial version will focus on Maryland hospitals and three conditions: heart attack, heart failure, and pneumonia. 
 
-The app will support informed comparisons rather than estimate an individual's disease risk or identify a universally best hospital. A patient's clinical needs, insurance network, specialist availability, and travel constraints remain relevant but are not fully captured in these data. Historical Medicare payments will be considered as a separate exploratory feature rather than a measure of current affordability.
+Our motivation is to allow patients to exercise their rights to choose health care services. The app will support informed comparisons rather than estimate an individual's disease risk or identify a universally best hospital. A patient's clinical needs, insurance network, specialist availability, and travel constraints remain relevant but are not fully captured in these data. Historical Medicare payments will be considered as a separate exploratory feature rather than a measure of current affordability.
 
 ## 3. Related work
 
