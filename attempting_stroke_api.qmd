@@ -97,3 +97,11 @@ resp_status(response)
 
 resp_body_string(response)
 ```
+
+```{r}
+# storing the data
+## working directory needs to be set first
+write_csv(hospitals, "data/hospitals_2026-11-11.csv")
+write_csv(complications_deaths, "data/complications_deaths_2026-11-11.csv")
+write_csv(unplanned_readmissions, "data/unplanned_readmissions_2026-11-11.csv")
+```
