@@ -50,12 +50,6 @@ We will acquire data through the **CMS Provider Data Catalog API**, which allows
 
 The outcome tables contain measure identifiers and names, scores, denominators, national comparison categories, uncertainty estimates where available, footnotes, and reporting dates. Hospital information can be linked to outcomes using the CMS facility ID. These are hospital-level aggregate records, not individual patient data.
 
-### Evidence of access
-
-On November 11, 2026, our executed R workflow retrieved **56 Maryland hospital records, 960 mortality/complication records, 672 unplanned-visit records, and 180 historical payment records**. These counts describe the full state-filtered source tables, which include measures beyond our proposed three-condition scope.
-
-A preliminary joined extract contains 288 hospital--condition rows across 48 hospitals and six conditions. It demonstrates that selected measures can be linked, but it is broader than the proposed initial app. We also created an executable Quarto exploration that retrieves the four datasets, exports CSVs, and displays the first six rows of selected columns. The code and outputs provide concrete evidence that the data are accessible.
-
 ### Collection and preparation workflow
 
 We will use reusable R functions to send state-filtered requests, retrieve successive pages using `limit` and `offset`, retry transient failures, and compare downloaded row counts with API totals. The preliminary workflow uses pages of 500 records. We will retain downloaded responses and collection metadata so that data displayed in the app can be traced to a source and retrieval date.
