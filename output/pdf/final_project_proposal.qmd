@@ -128,3 +128,13 @@ The exact deadlines for slides, the final write-up, and repository submission wi
 The **minimum viable product** is a Maryland app with three condition choices, a hospital comparison table, a selected-hospital comparison view, and clear definitions, dates, and missingness indicators. We have demonstrated API access, so the main remaining challenges are interpretation, measure alignment, usability, and reliable deployment.
 
 We will manage scope by prioritizing the three-condition comparison over a national rollout, geographic distance calculations, composite scores, or historical payment visualizations. If data completeness limits a comparison, we will show that limitation rather than impute a hospital's performance. If hosting presents difficulties, local execution will remain available while we resolve deployment. Further extensions will be considered only after the core workflow is working and reproducible.
+
+## 10. Team Responsibilities
+
+Sankalp (Sunny) Kumar: Confirm the initial measures.
+Wanting Shan: Build a reproducible data pipeline.
+Shiyi Zhang: Develop transparent comparisons.
+Mason Cleveland: Build the Shiny interface.
+Yutong (Benny) Li: Verify and deploy the product.
+
+We will coordinate through regular meetings and use GitHub to share code, track progress, and collaborate on the project.
