@@ -1,4 +1,4 @@
-terminal command to pull data from main branch
+terminal command to pull data from main branch:\
 `git restore --source main -- data/`
 
 ## Current Implementations
