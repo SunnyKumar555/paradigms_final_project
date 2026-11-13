@@ -135,10 +135,14 @@ We will manage scope by prioritizing the three-condition comparison over a natio
 
 ## 10. Team Responsibilities
 
-Sankalp (Sunny) Kumar: Confirm the initial measures.
-Wanting Shan: Build a reproducible data pipeline.
-Shiyi Zhang: Develop transparent comparisons.
-Mason Cleveland: Build the Shiny interface.
-Yutong (Benny) Li: Verify and deploy the product.
+- Sankalp (Sunny) Kumar: Confirm the initial measures.
+
+- Wanting Shan: Build a reproducible data pipeline.
+
+- Shiyi Zhang: Develop transparent comparisons.
+
+- Mason Cleveland: Build the Shiny interface.
+
+- Yutong (Benny) Li: Verify and deploy the product.
 
 We will coordinate through regular meetings and use GitHub to share code, track progress, and collaborate on the project.
