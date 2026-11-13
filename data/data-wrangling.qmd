@@ -1,0 +1,47 @@
+---
+title: "Data Wrangling"
+format: html
+---
+
+### Store data from .csv
+```{r}
+library(readr)
+
+# Load hospitals_2026_11_11 data
+hospitals_2026_11_11 <- read_csv("./data/hospitals_2026-11-11.csv")
+
+```
+
+
+### Adding lat/long coordinates
+```{r}
+library(tidygeocoder)
+library(dplyr)
+
+# Census
+geo1 <- hospitals_2026_11_11 |>
+  geocode(street = address, city = citytown, state = state, postalcode = zip_code,
+          method = "census", lat = lat, long = lng)
+
+# failures with ArcGIS
+failed <- geo1 |>
+  filter(is.na(lat)) |>
+  select(-lat, -lng) |>
+  geocode(street = address, city = citytown, state = state, postalcode = zip_code,
+          method = "arcgis", lat = lat, long = lng)
+
+# Combine and check
+hospitals_geo <- bind_rows(filter(geo1, !is.na(lat)), failed)
+sum(is.na(hospitals_geo$lat))   # how many still have no coordinates
+```
+
+```{r}
+new <- hospitals_geo |> select(-lat, -lng)
+
+nrow(hospitals_2026_11_11) == nrow(new)   # should be TRUE
+names(hospitals_2026_11_11) == names(new) # should be all TRUE
+
+anti_join(hospitals_2026_11_11, new, by = names(hospitals_2026_11_11))   # should be 0 rows
+anti_join(new, hospitals_2026_11_11, by = names(hospitals_2026_11_11))   # should be 0 rows
+
+```
