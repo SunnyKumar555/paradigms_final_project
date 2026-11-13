@@ -8,12 +8,12 @@ format: html
 library(readr)
 
 # Load hospitals_2026_11_11 data
-hospitals_2026_11_11 <- read_csv("./data/hospitals_2026-11-11.csv")
+hospitals_2026_11_11 <- read_csv("data/hospitals_2026-11-11.csv")
 
 ```
 
 
-### Adding lat/long coordinates
+### Adding latitude/longitude coordinates
 ```{r}
 library(tidygeocoder)
 library(dplyr)
@@ -35,13 +35,21 @@ hospitals_geo <- bind_rows(filter(geo1, !is.na(lat)), failed)
 sum(is.na(hospitals_geo$lat))   # how many still have no coordinates
 ```
 
+
+### Verify nothing is changed (other than the new lat lng columns)
 ```{r}
 new <- hospitals_geo |> select(-lat, -lng)
 
-nrow(hospitals_2026_11_11) == nrow(new)   # should be TRUE
-names(hospitals_2026_11_11) == names(new) # should be all TRUE
+nrow(hospitals_2026_11_11) == nrow(new)
+names(hospitals_2026_11_11) == names(new)
 
-anti_join(hospitals_2026_11_11, new, by = names(hospitals_2026_11_11))   # should be 0 rows
-anti_join(new, hospitals_2026_11_11, by = names(hospitals_2026_11_11))   # should be 0 rows
+nrow(anti_join(hospitals_2026_11_11, new, by = names(hospitals_2026_11_11))) == 0
+nrow(anti_join(new, hospitals_2026_11_11, by = names(hospitals_2026_11_11))) == 0
 
+```
+
+
+### Save into the data folder
+```{r}
+write_csv(hospitals_geo, "data/hospitals_2026-11-11.csv")
 ```
