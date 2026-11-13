@@ -20,15 +20,17 @@ execute:
 
 Our guiding question is: **How can patients and caregivers compare hospitals for a selected condition using publicly available measures of mortality, readmissions, cost and overall quality?**
 
-Choosing a hospital involves interpreting information that may be difficult to find or compare. A hospital's overall rating does not necessarily describe its performance for a particular condition. Patients may also encounter missing measures, different reporting periods, and historical financial information without understanding how these affect a comparison.
+Choosing a suitable hospital involves interpreting information that can be difficult to find or compare. A hospital's overall rating does not necessarily describe its performance for a particular disease and condition. Patients also encounter missing measures, different reporting periods, and historical financial information without understanding how these affect a comparison.
 
 We propose a Shiny application for patients and caregivers who are exploring options for planned care or discussing hospital choices with a clinician. Users will select a condition and location, inspect available hospital outcomes, and compare measures alongside their definitions and reporting periods. The initial version will focus on Maryland hospitals and three conditions: heart attack, heart failure, and pneumonia. 
 
-Our motivation is to allow patients to exercise their rights to choose health care services. The app will support informed comparisons rather than estimate an individual's disease risk or identify a universally best hospital. A patient's clinical needs, insurance network, specialist availability, and travel constraints remain relevant but are not fully captured in these data. Historical Medicare payments will be considered as a separate exploratory feature rather than a measure of current affordability.
+Our motivation is to bridge the gap between available information and usable information, allow patients to exercise their rights to choose health care services. The app will support specifically informed comparisons rather than estimate an individual's disease risk or identify a universally best hospital. A patient's clinical needs, insurance network, specialist availability, and travel constraints remain relevant but are not fully captured in these data. Historical Medicare payments will be considered as a separate exploratory feature rather than a measure of current affordability.
 
 ## 3. Related work
 
 [Medicare Care Compare](https://www.medicare.gov/care-compare/) already provides a public interface for comparing healthcare providers, including hospitals. The [CMS Provider Data Catalog](https://data.cms.gov/provider-data/) supplies the underlying public datasets that can support reproducible analyses and alternative interfaces.
+
+[Zocdoc](https://www.zocdoc.com/primary-care-doctors/baltimore-9642pm) offers another approach to helping patients find care. Its Baltimore provider listings bring together location, accepted insurance, patient reviews, and appointment availability, allowing users to search for providers and book appointments.
 
 Our project will build on these resources rather than introduce a new source of hospital quality measurement. Its intended contribution is a focused, condition-first comparison workflow for a small set of outcomes, with explicit explanations of missing data, reporting periods, and the distinction between overall hospital ratings and condition-specific performance. We will review Care Compare's existing hospital interface during development to refine which aspects our app can make easier to understand. Any claimed usability improvement will remain a design goal unless supported by user feedback.
 
@@ -72,7 +74,10 @@ We will organize development around the following tasks:
 3. **Develop transparent comparisons.** 
 4. **Build the Shiny interface.** 
 5. **Verify and deploy the product.** 
-We will begin with measure-by-measure comparisons rather than a composite ranking. A weighted score would require additional decisions about scale, weights, missingness, and uncertainty; it is a possible extension only after the core comparison tool works. Machine learning is not necessary for the proposed question.
+
+We will begin with measure-by-measure comparisons rather than a composite ranking. A weighted score would require additional decisions about scale, weights, missingness, and uncertainty; it is a possible extension only after the core comparison tool works. 
+
+If time permits, we plan to conduct one or two usability testing sessions to assess whether users can easily find and understand our build interface. Their feedback will help us improve the app’s usability and usefulness. 
 
 ## 6. Programming paradigms
 
@@ -84,7 +89,7 @@ In addition to meaningful API collection, we plan to integrate **functional prog
 
 The components will work together as follows: a command-line entry point runs functional R acquisition and cleaning routines, which create validated data for Shiny and a rendered Quarto report. We will discuss whether the planned command-line component is sufficiently substantive at the proposal meeting. Using several software packages or languages alone will not be presented as evidence of multiple paradigms.
 
-**Machine learning** will potentially play a role in this project, depending on time, data quality, and feasibility. 
+**Machine learning** is not necessary for the proposed question, but will potentially play a role in this project, depending on time, data quality, and feasibility. 
 
 ## 7. Software
 
@@ -99,7 +104,7 @@ The main implementation will use **R**:
 
 A Bash script will coordinate the command-line workflow. Git and a shared GitHub repository will support collaboration, review, and contribution tracking. We plan to deploy through shinyapps.io, subject to account access and hosting limits, and will provide local run instructions as well. We will record package versions and document dependencies, with `renv` considered for an R environment lockfile.
 
-An initial sample join was produced with a small Python script. For the final app, we plan to consolidate the core preparation workflow in R to simplify execution and maintenance.
+We paln an initial sample join being produced by a small Python script. For the final app, we plan to consolidate the core preparation workflow in R to simplify execution and maintenance.
 
 ## 8. Product
 
@@ -116,7 +121,7 @@ The repository will document how to install dependencies, refresh data, and star
 | Period | Planned milestone |
 |:--|:--|
 | November 11--13 | Finalize the proposal, confirm scope, and retain evidence of API access |
-| November 16--20 | Meet with an instructor or TA and revise the plan based on feedback |
+| November 16--20 | Meet with instructor or TA and revise the plan based on feedback |
 | November 21--30 | Complete acquisition, cleaning, provenance, and data validation |
 | December 1--10 | Build the Shiny comparison interface and explanatory graphics |
 | December 11--16 | Check usability and correctness, deploy, and prepare documentation and slides |
