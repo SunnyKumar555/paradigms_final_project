@@ -17,3 +17,4 @@ git restore --source main -- data/
 3. Ensure higher score is better
 4. Customize weights for mortality and readmission measure (MORTALITY_SHARE)
 5. Make the side panel toggelable
+6. Fix the scoring (lower score is better)
