@@ -1,0 +1,388 @@
+---
+title: "Data Extraction and Cleaning for Maryland Hospitals"
+format: html
+---
+
+
+```{r}
+# Loading packages for API calls and writing functions for extracting the MD only data from CMS
+library(httr2)
+library(dplyr)
+library(janitor)
+library(tibble)
+
+get_cms_state <- function(dataset_id, state = "MD",
+                          limit = 1000) {
+
+  url <- paste0(
+    "https://data.cms.gov/provider-data/api/1/",
+    "datastore/query/",
+    dataset_id,
+    "/0"
+  )
+
+  response <- request(url) |>
+    req_url_query(
+      limit = limit,
+      offset = 0,
+      `conditions[0][property]` = "state",
+      `conditions[0][value]` = state,
+      `conditions[0][operator]` = "="
+    ) |>
+    req_perform()
+
+  result <- resp_body_json(
+    response,
+    simplifyVector = TRUE
+  )
+
+  as_tibble(result$results) |>
+    clean_names()
+}
+
+# Extracting data and check if the dataset is complete and only for Maryland
+hospitals_md <- get_cms_state("xubh-q36u")
+mortality_md <- get_cms_state("ynj2-r877")
+readmissions_md <- get_cms_state("632h-zaca")
+
+dim(hospitals_md)
+dim(mortality_md)
+dim(readmissions_md)
+
+unique(hospitals_md$state)
+unique(mortality_md$state)
+unique(readmissions_md$state)
+```
+
+
+```{r}
+mortality_md |>
+  count(measure_id, measure_name)
+
+readmissions_md |>
+  count(measure_id, measure_name)
+
+names(hospitals_md)
+names(mortality_md)
+names(readmissions_md)
+```
+
+
+
+```{r}
+# From CMS data dictionary:
+# COMP-HIP-KNEE: Rate of complications for hip/knee replacement patients
+# Hybrid HWM: Hybrid Hospital-Wide All-Cause Risk Standardized Mortality Rate
+# MORT-30-AMI: Death rate for heart attack patients
+# MORT-30-CABG: Death rate for Coronary Artery Bypass Graft (CABG) surgery patients
+# MORT-30-COPD: Death rate for chronic obstructive pulmonary disease (COPD) patients
+# MORT-30-HF: Death rate for heart failure patients
+# MORT-30-PN: Death rate for pneumonia patients
+# PSI 03: Pressure sores (alternate Measure ID: PSI_3_Ulcer)
+# PSI 12: Serious blood clots after surgery (alternate Measure ID: PSI-12-POSTOP-PULMEMB-DVT)
+mortality_ids <- c(
+  "COMP_HIP_KNEE",
+  "Hybrid_HWM",
+  "MORT_30_AMI",
+  "MORT_30_CABG",
+  "MORT_30_COPD",
+  "MORT_30_HF",
+  "MORT_30_PN",
+  "PSI_03",
+  "PSI_12"
+)
+
+readmission_ids <- c(
+  "EDAC_30_AMI",
+  "EDAC_30_HF",
+  "Hybrid_HWR",
+  "OP_35_ADM",
+  "READM_30_AMI",
+  "READM_30_COPD",
+  "READM_30_HF",
+  "READM_30_PN"
+)
+
+mortality_selected <- mortality_md |>
+  filter(measure_id %in% mortality_ids)
+
+readmissions_selected <- readmissions_md |>
+  filter(measure_id %in% readmission_ids)
+
+missing_hospitals <- hospitals_md |>
+  anti_join(
+    mortality_selected,
+    by = "facility_id"
+  ) |>
+  select(
+    facility_id,
+    facility_name,
+    hospital_type,
+    hospital_overall_rating
+  )
+
+print(missing_hospitals)
+
+class(mortality_selected$score)
+class(readmissions_selected$score)
+
+unique(mortality_selected$score)
+unique(readmissions_selected$score)
+
+mortality_selected |>
+  filter(is.na(suppressWarnings(as.numeric(score)))) |>
+  count(score, sort = TRUE)
+
+readmissions_selected |>
+  filter(is.na(suppressWarnings(as.numeric(score)))) |>
+  count(score, sort = TRUE)
+```
+
+
+```{r}
+library(dplyr)
+
+clean_clinical_measures <- function(data) {
+
+  data |>
+    mutate(
+      score_raw = score,
+
+      across(
+        c(score, denominator,
+          lower_estimate, higher_estimate),
+        ~ as.numeric(na_if(.x, "Not Available"))
+      ),
+
+      evidence_available = !is.na(score),
+      measure_direction = "lower"
+    )
+}
+
+mortality_clean <- clean_clinical_measures(
+  mortality_selected
+)
+
+readmissions_clean <- clean_clinical_measures(
+  readmissions_selected
+)
+
+hospitals_md_clean <- hospitals_md |>
+  filter(hospital_type != "Psychiatric")
+```
+
+```{r}
+check_availability <- function(data) {
+
+  data |>
+    group_by(measure_id) |>
+    summarise(
+      total = n(),
+      available = sum(!is.na(score)),
+      unavailable = sum(is.na(score)),
+      availability_pct = round(
+        available / total * 100, 1
+      ),
+      .groups = "drop"
+    ) |>
+    arrange(availability_pct)
+}
+
+mortality_availability <- check_availability(
+  mortality_clean
+)
+
+readmission_availability <- check_availability(
+  readmissions_clean
+)
+
+print(mortality_availability)
+print(readmission_availability)
+```
+
+
+```{r}
+mortality_clean |>
+  count(facility_id, measure_id) |>
+  filter(n > 1)
+
+readmissions_clean |>
+  count(facility_id, measure_id) |>
+  filter(n > 1)
+
+
+clinical_md <- bind_rows(
+  mortality_clean,
+  readmissions_clean
+)
+
+dim(clinical_md)
+glimpse(clinical_md)
+
+n_distinct(clinical_md$facility_id)
+n_distinct(clinical_md$measure_id)
+
+clinical_md |>
+  count(facility_id) |>
+  count(n)
+```
+
+
+```{r}
+hospital_info <- hospitals_md_clean |>
+  select(
+    facility_id,
+    hospital_type,
+    hospital_ownership,
+    hospital_overall_rating,
+    hospital_overall_rating_footnote,
+    emergency_services
+  ) |>
+  mutate(
+    hospital_overall_rating = as.numeric(
+      na_if(hospital_overall_rating, "Not Available")
+    )
+  )
+
+  waypoint_md <- clinical_md |>
+  left_join(
+    hospital_info,
+    by = "facility_id",
+    relationship = "many-to-one"
+  )
+
+dim(waypoint_md)
+glimpse(waypoint_md)
+```
+
+
+```{r}
+library(tidygeocoder)
+hospital_addresses <- hospitals_md_clean |>
+  select(
+    facility_id,
+    facility_name,
+    address,
+    citytown,
+    state,
+    zip_code
+  ) |>
+  distinct()
+
+hospital_locations <- hospital_addresses |>
+  geocode(
+    street = address,
+    city = citytown,
+    state = state,
+    postalcode = zip_code,
+    method = "census",
+    lat = lat,
+    long = lng
+  )
+
+  hospital_locations |>
+  summarise(
+    total = n(),
+    successfully_geocoded = sum(
+      !is.na(lat) & !is.na(lng)
+    ),
+    missing_coordinates = sum(
+      is.na(lat) | is.na(lng)
+    )
+  )
+
+  hospital_locations |>
+  filter(is.na(lat) | is.na(lng)) |>
+  select(facility_id, facility_name, address)
+
+waypoint_md <- waypoint_md |>
+  left_join(
+    hospital_locations |>
+      select(facility_id, lat, lng),
+    by = "facility_id",
+    relationship = "many-to-one"
+  )
+
+  dim(waypoint_md)
+```
+
+
+```{r}
+# Inspecting the missing coordinates and manually adding the lat/lng information for the missing hospitals 
+missing_addresses <- tibble(
+  facility_id = c("210016", "21007F", "21010F"),
+  full_address = c(
+    "11890 Healing Way, Silver Spring, MD 20904, USA",
+    "4494 North Palmer Road, Bethesda, MD 20889, USA",
+    "361 Boiler House Road, Perry Point, MD 21902, USA"
+  )
+)
+
+missing_locations <- missing_addresses |>
+  geocode(
+    address = full_address,
+    method = "osm",
+    lat = lat,
+    long = lng,
+    full_results = TRUE
+  )
+
+missing_locations |>
+  select(facility_id, full_address, lat, lng)
+
+manual_locations <- tibble(
+  facility_id = c("210016", "21010F"),
+  lat = c(39.04966, 39.54968),
+  lng = c(-76.95726, -76.06235)
+)
+
+location_corrections <- bind_rows(
+  missing_locations |>
+    filter(!is.na(lat), !is.na(lng)) |>
+    select(facility_id, lat, lng),
+
+  manual_locations
+)
+
+hospital_locations <- hospital_locations |>
+  rows_patch(
+    location_corrections,
+    by = "facility_id"
+  )
+
+hospital_locations |>
+  summarise(
+    total = n(),
+    available = sum(!is.na(lat) & !is.na(lng)),
+    missing = sum(is.na(lat) | is.na(lng))
+  )
+
+waypoint_md <- waypoint_md |>
+  select(-any_of(c("lat", "lng"))) |>
+  left_join(
+    hospital_locations |>
+      select(facility_id, lat, lng),
+    by = "facility_id",
+    relationship = "many-to-one"
+  )
+
+dim(waypoint_md)
+
+sum(is.na(waypoint_md$lat))
+sum(is.na(waypoint_md$lng))
+
+waypoint_md <- waypoint_md |>
+  relocate(
+    facility_id,
+    facility_name,
+    citytown,
+    state,
+    lat,
+    lng,
+    measure_id,
+    measure_name,
+    score
+  )
+
+view(waypoint_md)
+```
